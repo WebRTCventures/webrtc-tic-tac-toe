@@ -92,7 +92,6 @@ RUN cd /root/janus-gateway && \
     --disable-plugin-nosip \
     --disable-plugin-sip \
     --disable-plugin-streaming \
-	--disable-plugin-textroom \
 	--disable-plugin-recordplay \
 	--disable-plugin-voicemail \
 	--disable-plugin-audiobridge \
