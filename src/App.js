@@ -18,7 +18,7 @@ function App() {
           <JanusComponent 
             server="/janus"
             iceUrls='stun:stun.l.google.com:19302'>
-              <Game room={room} username={username}/>
+              <Game room={room} username={username} setInGame={setInGame}/>
           </JanusComponent>
         </>
       ) : (

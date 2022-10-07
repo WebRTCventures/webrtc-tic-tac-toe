@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Board from './Board';
 import { textUtils } from '../vendor/react-janus';
 
-function Game({ janus, room, username }) {
+function Game({ janus, room, username, setInGame }) {
   const [rivals, setRivals] = useState(0);
   const [result, setResult] = useState({ winner: 'none', state: 'none' });
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
@@ -13,7 +13,7 @@ function Game({ janus, room, username }) {
     console.log(event, data);
     switch (event) {
       case 'success':
-        setRivals(data.participants.length);
+        if (data.participants) setRivals(data.participants.length);
         break;
       case 'join':
         if (username !== data.username && rivals < 1) {
@@ -33,6 +33,9 @@ function Game({ janus, room, username }) {
             return val;
           }))
         };
+        break;
+      case 'leave':
+        setInGame(false);
         break;
       default:
         break;
@@ -70,6 +73,14 @@ function Game({ janus, room, username }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [janus]);
 
+  useEffect(() => {
+    return () => {
+      textUtils.leaveRoom(room);
+      setInGame(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       {rivals === 0 && (
@@ -84,6 +95,9 @@ function Game({ janus, room, username }) {
             board={board}
             handleChooseSquare={chooseSquare}
           />
+          <button onClick={() => {
+            setInGame(false)
+          }} >Leave Game</button>
           {result.state === 'won' && <div>{result.winner} won the game</div>}
           {result.state === 'tie' && <div>Game Tied</div>}
         </div>

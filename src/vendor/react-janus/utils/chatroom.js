@@ -152,3 +152,16 @@ export function sendData(chatroom, data, event = 'message') {
     success: function () { },
   });
 }
+
+export function leaveRoom(chatroom) {
+  const message = {
+    textroom: 'leave',
+    transaction: randomString(12),
+    room: chatroom
+  }
+  chatroomHandler.data({
+    text: JSON.stringify(message),
+    error: function (reason) { },
+    success: function () { },
+  })
+}
