@@ -25,6 +25,7 @@
  */
 
 import adapter from 'webrtc-adapter';
+import jQuery from 'jquery';
 
 // List of sessions
 Janus.sessions = {};
@@ -417,6 +418,7 @@ Janus.init = function (options) {
 		}
 		Janus.log("Initializing library");
 
+		// eslint-disable-next-line react-hooks/rules-of-hooks
 		let usedDependencies = options.dependencies || Janus.useDefaultDependencies();
 		Janus.isArray = usedDependencies.isArray;
 		Janus.webRTCAdapter = usedDependencies.webRTCAdapter;

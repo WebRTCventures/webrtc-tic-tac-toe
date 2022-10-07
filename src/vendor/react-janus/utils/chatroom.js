@@ -105,18 +105,31 @@ export function publishChatroom(
       const json = JSON.parse(data);
       const event = json['textroom'];
 
-      if (event === 'message') {
-        const msg = {
-          user: json['from'],
-          date: json['date'],
-          data: json['text'],
-        };
-        callback(chatroomHandler, 'ondata', msg);
-      } else if (event === 'announcement') {
-      } else if (event === 'join') {
-      } else if (event === 'leave') {
-      } else if (event === 'kicked') {
-      } else if (event === 'destroyed') {
+      switch (event) {
+        case 'success':
+          callback(chatroomHandler, 'onsuccess', json);
+          break;
+        case 'message':
+          const msg = {
+            user: json['from'],
+            date: json['date'],
+            data: json['text'],
+          };
+          callback(chatroomHandler, 'onmessage', msg);
+          break;
+      case 'announcement':
+        break;
+      case 'join':
+        callback(chatroomHandler, 'onjoin', json);
+        break;
+      case 'leave':
+        break;
+      case 'kicked':
+        break;
+      case 'destroyed':
+        break;
+      default:
+        break;
       }
     },
     oncleanup: function () {
@@ -125,7 +138,7 @@ export function publishChatroom(
   });
 }
 
-function randomString(len, charSet) {
+export function randomString(len, charSet) {
   charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var randomString = '';
   for (var i = 0; i < len; i++) {
