@@ -1,4 +1,5 @@
 // import Janus from './janus';
+let chatroomHandler;
 
 export function publishChatroom(
   janus,
@@ -9,8 +10,6 @@ export function publishChatroom(
   display,
   callback
 ) {
-  let chatroomHandler;
-
   if (!janus) {
     return;
   }
@@ -107,29 +106,15 @@ export function publishChatroom(
 
       switch (event) {
         case 'success':
-          callback(chatroomHandler, 'onsuccess', json);
-          break;
         case 'message':
-          const msg = {
-            user: json['from'],
-            date: json['date'],
-            data: json['text'],
-          };
-          callback(chatroomHandler, 'onmessage', msg);
+        case 'announcement':
+        case 'join':
+        case 'leave':
+        case 'kicked':
+        case 'destroyed':
+        default:
+          callback(chatroomHandler, event, json);
           break;
-      case 'announcement':
-        break;
-      case 'join':
-        callback(chatroomHandler, 'onjoin', json);
-        break;
-      case 'leave':
-        break;
-      case 'kicked':
-        break;
-      case 'destroyed':
-        break;
-      default:
-        break;
       }
     },
     oncleanup: function () {
@@ -148,9 +133,9 @@ export function randomString(len, charSet) {
   return randomString;
 }
 
-export function sendData(chatroomHandler, chatroom, data) {
+export function sendData(chatroom, data, event = 'message') {
   var message = {
-    textroom: 'message',
+    textroom: event,
     transaction: randomString(12),
     room: chatroom,
     text: data,

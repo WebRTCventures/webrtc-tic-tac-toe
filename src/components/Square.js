@@ -1,9 +1,11 @@
 import React from 'react';
 
-function Square () {
-  return (
-    <div>Square</div>
-  )
+function Square({handleChooseSquare, val}) {
+    return (
+        <div className='square' onClick={handleChooseSquare}>
+            {val}
+        </div>
+    );
 }
 
 export default Square;

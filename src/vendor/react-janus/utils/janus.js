@@ -1,3 +1,6 @@
+/* eslint-disable strict */
+/* eslint-disable no-throw-literal */
+/* eslint-disable eqeqeq */
 "use strict";
 
 /*
