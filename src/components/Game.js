@@ -3,7 +3,7 @@ import Board from './Board';
 import { textUtils } from '../vendor/react-janus';
 
 function Game({ janus, room, username }) {
-  const [players, setPlayers] = useState(0);
+  const [rivals, setRivals] = useState(0);
   const [result, setResult] = useState({ winner: 'none', state: 'none' });
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [player, setPlayer] = useState('X');
@@ -13,11 +13,11 @@ function Game({ janus, room, username }) {
     console.log(event, data);
     switch (event) {
       case 'success':
-        setPlayers(data.participants.length);
+        setRivals(data.participants.length);
         break;
       case 'join':
-        if (username !== data.username && players < 1) {
-          setPlayers((prevState => prevState + 1));
+        if (username !== data.username && rivals < 1) {
+          setRivals((prevState => prevState + 1));
         }
         break;
       case 'message':
@@ -26,7 +26,7 @@ function Game({ janus, room, username }) {
           const currentPlayer = rivalPlayer === 'X' ? 'O' : 'X';
           setPlayer(currentPlayer);
           setTurn(currentPlayer);
-          setBoard(board.map((val, index) => {
+          setBoard(prevState => prevState.map((val, index) => {
             if (index === rivalSquare && val === '') {
               return rivalPlayer
             }
@@ -48,7 +48,7 @@ function Game({ janus, room, username }) {
         JSON.stringify({square, player}),
         'message'
       )
-      setBoard(board.map((val, index) => {
+      setBoard(prevState => prevState.map((val, index) => {
         if (index === square && val === '') {
           return player
         }
@@ -72,10 +72,10 @@ function Game({ janus, room, username }) {
 
   return (
     <>
-      {players === 0 && (
+      {rivals === 0 && (
         <p>Waiting for other participants to join</p>
       )}
-      {players === 1 && (
+      {rivals === 1 && (
         <div className='gameContainer'>
           <h3>Game {room}</h3>
           <p>User: {username}</p>
@@ -88,7 +88,7 @@ function Game({ janus, room, username }) {
           {result.state === 'tie' && <div>Game Tied</div>}
         </div>
       )}
-      {players >= 2 && (
+      {rivals >= 2 && (
         <p>This game is full!</p>
       )}
     </>
