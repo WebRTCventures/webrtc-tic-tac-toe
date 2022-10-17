@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Board from './Board';
 import { textUtils } from '../vendor/react-janus';
 
@@ -8,16 +8,18 @@ function Game({ janus, room, username, setInGame }) {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [player, setPlayer] = useState('X');
   const [turn, setTurn] = useState('X');
+  const rivalsRef = useRef();
+
+  rivalsRef.current = rivals;
 
   const janusCallback = (handle, event, data) => {
-    console.log(event, data);
     switch (event) {
       case 'success':
         if (data.participants) setRivals(data.participants.length);
         break;
       case 'join':
-        if (username !== data.username && rivals < 1) {
-          setRivals((prevState => prevState + 1));
+        if (username !== data.username && rivalsRef.current < 1) {
+          setRivals(prevState => prevState + 1);
         }
         break;
       case 'message':
@@ -33,9 +35,6 @@ function Game({ janus, room, username, setInGame }) {
             return val;
           }))
         };
-        break;
-      case 'leave':
-        setInGame(false);
         break;
       default:
         break;

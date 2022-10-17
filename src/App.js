@@ -18,14 +18,14 @@ function App() {
           <JanusComponent 
             server="/janus"
             iceUrls='stun:stun.l.google.com:19302'>
-              <Game room={room} username={username} setInGame={setInGame}/>
+              <Game room={parseInt(room)} username={username} setInGame={setInGame}/>
           </JanusComponent>
         </>
       ) : (
         <>
-          <input type='text' placeholder='Enter Room Number' value={room} onChange={(evt) => setRoom(parseInt(evt.target.value))} />
+          <input type='text' placeholder='Enter Room Number' value={room} onChange={(evt) => setRoom(evt.target.value)} />
           <input type='text' placeholder="Enter Username" value={username} onChange={(evt) => setUsername(evt.target.value)} />
-          <button onClick={() => handleJoinGame(parseInt(room))}>Join Call</button>
+          <button onClick={handleJoinGame}>Join Call</button>
         </>
       )}
     </>
