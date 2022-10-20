@@ -55,16 +55,40 @@ export function publishChatroom(
     },
     ondataopen: function (data) {
       // Janus.log("The DataChannel is available!");
-      if (isPublisher) {
-        const request = {
-          request: 'create',
-          room: chatroomId,
-        };
-        chatroomHandler.send({
-          message: request,
-          success: (data) => {
-            callback(chatroomHandler, 'created', chatroomId);
+      const checkRoomRequest = {
+        request: 'exists',
+        room: chatroomId
+      }
 
+      chatroomHandler.send({
+        message: checkRoomRequest,
+        success: data => {
+          if (isPublisher && !data.exists) {
+            const request = {
+              request: 'create',
+              room: chatroomId,
+            };
+            chatroomHandler.send({
+              message: request,
+              success: (data) => {
+                callback(chatroomHandler, 'created', chatroomId);
+
+                const request = {
+                  textroom: 'join',
+                  transaction: randomString(12),
+                  room: chatroomId,
+                  username: username,
+                  display: display,
+                };
+                chatroomHandler.data({
+                  text: JSON.stringify(request),
+                  success: (data) => {
+                    callback(chatroomHandler, 'joined');
+                  },
+                });
+              },
+            });
+          } else {
             const request = {
               textroom: 'join',
               transaction: randomString(12),
@@ -75,28 +99,12 @@ export function publishChatroom(
             chatroomHandler.data({
               text: JSON.stringify(request),
               success: (data) => {
-                console.log('Publisher joined');
                 callback(chatroomHandler, 'joined');
               },
             });
-          },
-        });
-      } else {
-        const request = {
-          textroom: 'join',
-          transaction: randomString(12),
-          room: chatroomId,
-          username: username,
-          display: display,
-        };
-        chatroomHandler.data({
-          text: JSON.stringify(request),
-          success: (data) => {
-            console.log('Subscriber joined');
-            callback(chatroomHandler, 'joined');
-          },
-        });
-      }
+          }
+        }
+      });
     },
     ondata: function (data) {
       // Janus.debug("We got data from the DataChannel! ");
